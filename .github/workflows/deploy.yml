@@ -37,7 +37,7 @@ jobs:
       uses: jimmyseraph/SFTP-Deploy-Action@v1.0
       with:  
         username: 'root'   #ssh user name
-        server: ${{secrets.BLOG_IP}} #引用之前创建好的secret
+        server: '124.222.233.189' #引用之前创建好的secret
         ssh_private_key: ${{secrets.SSH_PRIVATE_KEY}} #引用之前创建好的secret
         local_path: './public/*'  # 对应我们项目build的文件夹路径
         remote_path: '/usr/share/nginx/html'
