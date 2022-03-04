@@ -35,7 +35,7 @@ jobs:
       run: npm run build
     - name: check secrets
       shell: bash
-      with:
+      env:
         user_ip: ${{ secrets.BLOG_IP }}
       run: |
         echo $user_ip
