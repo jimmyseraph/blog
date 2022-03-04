@@ -41,7 +41,7 @@ jobs:
       run: |
         echo $user_ip
     - name: Deploy to Server
-      uses: wlixcc/SFTP-Deploy-Action@v1.2.2
+      uses: jimmyseraph/SFTP-Deploy-Action@v1.3
       with:  
         username: 'root'   #ssh user name
         server: ${{ secrets.BLOG_IP }} #引用之前创建好的secret
