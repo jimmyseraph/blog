@@ -34,10 +34,10 @@ jobs:
     - name: Build
       run: npm run build
     - name: Deploy to Server
-      uses: jimmyseraph/SFTP-Deploy-Action@v1.0
+      uses: jimmyseraph/SFTP-Deploy-Action@v1.2.2
       with:  
         username: 'root'   #ssh user name
-        server: '124.222.233.189' #引用之前创建好的secret
-        ssh_private_key: ${{secrets.SSH_PRIVATE_KEY}} #引用之前创建好的secret
+        server: ${{ secrets.BLOG_IP }} #引用之前创建好的secret
+        ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }} #引用之前创建好的secret
         local_path: './public/*'  # 对应我们项目build的文件夹路径
         remote_path: '/usr/share/nginx/html'
