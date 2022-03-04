@@ -33,13 +33,8 @@ jobs:
       run: npm install
     - name: Build
       run: npm run build
-    - name: Echo
-      with:
-        user_ip: ${{ secrets.BLOG_IP }}
-      run: |
-        echo $user_ip
     - name: Deploy to Server
-      uses: jimmyseraph/SFTP-Deploy-Action@v1.2.2
+      uses: wlixcc/SFTP-Deploy-Action@v1.2.2
       with:  
         username: 'root'   #ssh user name
         server: ${{ secrets.BLOG_IP }} #引用之前创建好的secret
