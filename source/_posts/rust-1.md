@@ -36,6 +36,9 @@ $ rustup --version
 $ rustc --version
 $ cargo --version
 ```
+rust的第三方库（crates）在线查询：https://crates.io/
+> 这个有点像java的mvnrepository之类的查询库
+
 rust沙盒在线环境：https://play.rust-lang.org/
 # Hello World
 创建一个hello.rs（或者在线上沙盒环境），输入代码：
