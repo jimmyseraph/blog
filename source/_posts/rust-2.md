@@ -9,7 +9,7 @@ tags:
 - 编程语言
 + description: 学习rust的第二天开始了，加油。
 ---
-crate# Cargo包管理器
+# Cargo包管理器
 ## cargo创建项目
 在rust中，使用cargo工具来进行包的管理，和第一章的例子不同，如果要使用cargo进行包管理，需要使用cargo命令来创建项目：
 ```Shell
