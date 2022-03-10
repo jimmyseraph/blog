@@ -30,6 +30,16 @@ $ rustup self uninstall
 + rustc —— rust编译器，编译rs
 + cargo —— 仓库管理工具，用于管理各自依赖和模块以及工具
 
+# 配置cargo国内镜像
+在`.cargo`目录下创建`config`文件，里面写上：
+```Toml
+[source.crates-io]
+registry = "https://github.com/rust-lang/crates.io-index"
+replace-with = 'ustc'
+[source.ustc]
+registry = "git://mirrors.ustc.edu.cn/crates.io-index"
+```
+
 查看版本:
 ```Shell
 $ rustup --version
