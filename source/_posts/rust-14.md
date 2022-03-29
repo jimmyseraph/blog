@@ -182,3 +182,178 @@ $ cargo yank --vers 1.0.1
 ```Shell
 $ cargo yank --vers 1.0.1 --undo
 ```
+# Workspace
+前面我们都是只创建了一个crate，一个`main.rs`和一个`lib.rs`。但是随着我们的项目越写越大，一个crate肯定不够用了，我们需要一个可执行的crate和多个库crates。这时候，我们可以使用workspace的方式进行管理。在这里，我们假设这个workspace叫add，其中需要有一个可执行crate叫adder，提供main，它依赖两个库crate，一个叫add-one，提供一个add_one函数，另一个库crate，叫add-two，提供一个add_two函数。<br>
+一步一步来，首先我们创建workspace目录：
+```Shell
+$ mkdir add
+$ cd add
+```
+在add目录下新建一个Cargo.toml文件：
+```Toml
+[workspace]
+
+members = [
+    "adder",
+]
+```
+然后我们在add目录下创建可执行crate：
+```Shell
+$ cargo new adder
+     Created binary (application) `adder` package
+```
+这时候，我们的目录结构像下面这样：
+```Plain
+├── Cargo.lock
+├── Cargo.toml
+├── adder
+│   ├── Cargo.toml
+│   └── src
+│       └── main.rs
+└── target
+```
+接下来，我们继续添加一个库crate：
+```Toml
+[workspace]
+
+members = [
+    "adder",
+    "add-one",
+]
+```
+命令行创建这个库crate：
+```Shell
+$ cargo new add-one --lib
+     Created library `add-one` package
+```
+此时目录结构变成这样：
+```Plain
+├── Cargo.lock
+├── Cargo.toml
+├── add-one
+│   ├── Cargo.toml
+│   └── src
+│       └── lib.rs
+├── adder
+│   ├── Cargo.toml
+│   └── src
+│       └── main.rs
+└── target
+```
+我们在`add-one/src/lib.rs`中写一个函数：
+```Rust
+pub fn add_one(x: i32) -> i32 {
+    x + 1
+}
+```
+我们在adder目录下面的Cargo.toml中需要引入add-one这个crate：
+```Toml
+[dependencies]
+add-one = { path = "../add-one" }
+```
+那么在main.rs中就可以使用了：
+```Rust
+use add_one;
+
+fn main() {
+    let num = 10;
+    println!(
+        "Hello, world! {} plus one is {}!",
+        num,
+        add_one::add_one(num)
+    );
+}
+```
+现在试一下编译，在add目录下，执行build命令：
+```Shell
+$ cargo build
+   Compiling add-one v0.1.0 (file:///projects/add/add-one)
+   Compiling adder v0.1.0 (file:///projects/add/adder)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.68s
+```
+如果要运行可执行crate，需要用`-p`参数指定package：
+```Shell
+$ cargo run -p adder
+    Finished dev [unoptimized + debuginfo] target(s) in 0.0s
+     Running `target/debug/adder`
+Hello, world! 10 plus one is 11!
+```
+# 在workspace中使用外部依赖
+假设我们要在add-one这个crate中使用rand这个外部依赖，那可以在add-one目录下面的Cargo.toml文件中添加依赖。它不可以被其他的crate使用。如果workspace中其他的crate也要用rand，需要在自己的package下面的Cargo.toml文件中去添加依赖。多个不同crates的Cargo.toml文件依赖了同一个rand，会在workspace根目录的Cargo.lock文件中锁定同一个版本。
+# 在workspace中添加测试
+我们可以在库crate中添加测试，比如`add-one/src/lib.rs`中：
+```Rust
+pub fn add_one(x: i32) -> i32 {
+    x + 1
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn it_works() {
+        assert_eq!(3, add_one(2));
+    }
+}
+```
+直接执行测试：
+```Shell
+   Compiling add-one v0.1.0 (file:///projects/add/add-one)
+   Compiling adder v0.1.0 (file:///projects/add/adder)
+    Finished test [unoptimized + debuginfo] target(s) in 0.27s
+     Running target/debug/deps/add_one-f0253159197f7841
+
+running 1 test
+test tests::it_works ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running target/debug/deps/adder-49979ff40686fa8e
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests add-one
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+```
+如果需要指定package来执行测试，同样用`-p`参数：
+```Shell
+$ cargo test -p add-one
+    Finished test [unoptimized + debuginfo] target(s) in 0.00s
+     Running target/debug/deps/add_one-b3235fea9a156f74
+
+running 1 test
+test tests::it_works ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests add-one
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+```
+注意，workspace中的crates需要一个一个单独的publish，workspace是不可以publish的。
+# 从crates.io下载安装可执行crate
+我们可以从crates.io上下载可执行crate并安装到本地，作为一个可执行工具，使用的参数是install：
+```Shell
+$ cargo install ripgrep
+    Updating crates.io index
+  Downloaded ripgrep v11.0.2
+  Downloaded 1 crate (243.3 KB) in 0.88s
+  Installing ripgrep v11.0.2
+--snip--
+   Compiling ripgrep v11.0.2
+    Finished release [optimized + debuginfo] target(s) in 3m 10s
+  Installing ~/.cargo/bin/rg
+   Installed package `ripgrep v11.0.2` (executable `rg`)
+```
+安装的可执行文件存放在`~/.cargo/bin`中。
+
+# 以cargo子命令形式运行
+cargo命令的可扩展性很强，只要在你的`$PATH`下有任何一个可执行文件的命名方式是`cargo-xxx`的形式，也就是说以`cargo-`开头的，就可以使用`cargo xxx`这种方式去把这个可执行文件当作cargo命令的子命令来执行。这是一个非常方便有趣的设计。
