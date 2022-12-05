@@ -7,8 +7,7 @@ categories:
 tags: 
 - Chrome
 - 插件
-+ description:
-介绍一些好用的Chrome浏览器插件。
++ description: 介绍一些好用的Chrome浏览器插件。
 ---
 
 # 啥东西
