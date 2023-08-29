@@ -109,7 +109,7 @@ searchAll: false
 copyright: false
 # Copyright info. of post | 文末版权信息
 
-word_count: false
+word_count: true
 # true 开启字数统计
 # 开启此功能需要安装插件 ：在 hexo根目录 执行npm i hexo-wordcount --save
 
@@ -238,7 +238,7 @@ disqus:
 
 gitalk:
   githubID: jimmyseraph
-  repo: https://github.com/jimmyseraph/blog
+  repo: blog
   ClientID: e8eb495701dfd0133343
   ClientSecret: 850102266297f0dab2da1a4b2df3d7d153d04f3f
   adminUser: jimmyseraph
