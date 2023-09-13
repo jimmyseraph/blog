@@ -238,7 +238,7 @@ disqus:
 
 gitalk:
   githubID: jimmyseraph
-  repo: blog
+  repo: jimmyseraph.github.io
   ClientID: e8eb495701dfd0133343
   ClientSecret: 850102266297f0dab2da1a4b2df3d7d153d04f3f
   adminUser: jimmyseraph
